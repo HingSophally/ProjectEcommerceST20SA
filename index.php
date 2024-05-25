@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecommerce Header</title>
+    <title>Ecommerce Header with Slideshow</title>
     <style>
         /* Resetting default margin and padding */
         * {
@@ -15,6 +15,7 @@
         /* Body background color */
         body {
             background-color: #fff;
+            font-family: Arial, sans-serif;
         }
 
         /* Header Styles */
@@ -26,7 +27,10 @@
             justify-content: space-between; /* Aligns logo to the left and icons to the right */
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
-            position: relative; /* Positioning context for the logo container */
+            position: fixed; /* Fix the header to the top */
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure the header is above other content */
         }
 
         .logo-container {
@@ -90,7 +94,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-            z-index: 1; /* Ensure menu appears above other content */
+            z-index: 1001; /* Ensure menu appears above other content */
             overflow-y: auto; /* Enable vertical scrolling if needed */
             padding-top: 60px; /* Adjust top padding to keep space for header */
             box-sizing: border-box; /* Ensure padding is included in the height */
@@ -117,6 +121,91 @@
             text-decoration: none;
             color: #333;
         }
+
+        /* Slideshow Styles */
+        .slideshow-container {
+            max-width: 1000px;
+            position: relative;
+            margin: 80px auto 0 auto; /* Added top margin to account for the fixed header */
+        }
+
+        .mySlides {
+            display: none;
+        }
+
+        .mySlides img {
+            width: 100%;
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Caption text */
+        .text {
+            color: #f2f2f2;
+            font-size: 15px;
+            padding: 8px 12px;
+            position: absolute;
+            bottom: 8px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* The dots */
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+            background-color: #717171;
+        }
+
+        /* Fading animation */
+        .fade {
+            -webkit-animation-name: fade;
+            -webkit-animation-duration: 1.5s;
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @-webkit-keyframes fade {
+            from {opacity: .4} 
+            to {opacity: 1}
+        }
+
+        @keyframes fade {
+            from {opacity: .4} 
+            to {opacity: 1}
+        }
     </style>
 </head>
 <body>
@@ -142,7 +231,53 @@
         </div>
     </header>
 
+    <main>
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="image/slide1.png" alt="Slide 1">
+            </div>
+            <div class="mySlides fade">
+                <img src="image/slide1.png" alt="Slide 2">
+            </div>
+            <div class="mySlides fade">
+                <img src="image/slide1.png" alt="Slide 3">
+            </div>
+        </div>
+        <br>
+        <div style="text-align:center">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+
+        <!-- Add some content to demonstrate scrolling -->
+        <div style="height: 1500px; background: linear-gradient(white, lightgray); padding: 20px;">
+            <p>Scroll down to see more content.</p>
+        </div>
+    </main>
+
     <script>
+        // JavaScript to handle slideshow
+        var slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+            setTimeout(showSlides, 2000); // Change image every 2 seconds
+        }
+
         // JavaScript to handle menu icon click event
         document.addEventListener('DOMContentLoaded', function() {
             var menuIcon = document.querySelector('.menu-icon');
