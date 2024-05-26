@@ -85,6 +85,7 @@
             color: green;
             font-size: 12px;
         }
+
     </style>
 </head>
 <body>
@@ -127,6 +128,7 @@
             echo "0 results";
         }
         $conn->close();
+
     ?>
 
 <script>

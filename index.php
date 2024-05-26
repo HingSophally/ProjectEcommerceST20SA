@@ -11,6 +11,45 @@
             padding: 0;
             box-sizing: border-box;
         }
+        /* For screens smaller than 600px */
+@media only screen and (max-width: 600px) {
+    .logo-container {
+        position: static;
+        transform: none;
+        text-align: center; /* Center the logo */
+    }
+
+    .logo {
+        width: 100px; /* Adjust logo width */
+        height: auto; /* Allow height to adjust proportionally */
+    }
+
+    .icons {
+        margin-left: 10px; /* Add some space between icons */
+    }
+
+    .menu-items-container {
+        padding: 10px; /* Adjust padding for menu items */
+    }
+
+    .menu-item {
+        padding: 8px; /* Adjust padding for menu items */
+        font-size: 16px; /* Adjust font size for menu items */
+    }
+}
+
+/* For screens between 600px and 900px */
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+    .logo {
+        width: 120px; /* Adjust logo width */
+    }
+}
+
+/* For screens larger than 900px */
+@media only screen and (min-width: 901px) {
+    /* Keep existing styles */
+}
+
 
         /* Body background color */
         body {
@@ -125,12 +164,14 @@
         /* Slideshow Styles */
         .slideshow-container {
             position: relative;
-            top: 0;
+            top:50px;
             left: 0;
             right: 0;
             bottom: 0;
-            z-index: 0; /* Ensure slideshow is behind the header */
+            z-index: 50px; /* Ensure slideshow is behind the header */
             overflow: hidden;
+
+            
         }
 
         .mySlides {
@@ -214,15 +255,87 @@
             animation-duration: 1.5s;
         }
 
-        @-webkit-keyframes fade {
-            from {opacity: .4} 
-            to {opacity: 1}
+        .product-card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            width: 300px;
+            border-radius: 5px;
+            margin: 10px;
+            display: inline-block;
+            vertical-align: top;
+            background: #fff;
+            position: relative; /* Make the parent element relative for absolute positioning */
         }
 
-        @keyframes fade {
-            from {opacity: .4} 
-            to {opacity: 1}
+        .product-card img {
+            width: 100%;
+            border-radius: 5px 5px 0 0;
         }
+
+        .product-details {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .product-name {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .product-price {
+            color: green;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .product-sizes, .product-status {
+            color: #777;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Add to Cart button style */
+        .add-to-cart-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Cancel button style */
+        .cancel-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+        }
+
+        /* Count style */
+        .add-to-cart-count {
+            position: absolute;
+            bottom: 5px;
+            left: 130px; /* Adjust left position for spacing */
+            color: green;
+            font-size: 12px;
+        }
+       
     </style>
 </head>
 <body>
@@ -242,7 +355,10 @@
         <div class="icons">
             <img src="image/icons8-search-24.png" alt="Search" title="Search">
             <img src="image/icons8-notification-24.png" alt="Notification" title="Notification">
-            <img src="image/icons8-shopping-bags-24.png" alt="Add to Bag" title="Add to Bag">
+            <div class="shopping-bag-container">
+                <img src="image/icons8-shopping-bags-24.png" alt="Add to Bag" title="Add to Bag" class="shopping-bag-icon" onclick="addToCart()">
+                <div class="cart-count">0</div> <!-- Container to display count number -->
+            </div>
             <!-- Placeholder for user icon with username -->
             <div class="user-icon">JD</div>
         </div>
@@ -267,10 +383,48 @@
         </div>
 
         <!-- Add some content to demonstrate scrolling -->
-        <div style="height: 1500px; background: linear-gradient(white, lightgray); padding: 20px;">
+        <div style=" padding: 20px;">
+        <div style=" padding: 20px;">
+        <div style=" padding: 20px;">
         <?php
-        include 'card_product.php'; // Assuming your Product class is in products.php
-    
+        $servername = "localhost";
+        $username = "root";  // Your database username
+        $password = "";  // Your database password
+        $dbname = "productsdb";  // Your database name
+
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT name, image_url, sizes, price, status FROM productstbl";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while($row = $result->fetch_assoc()) {
+                echo '<div class="product-card">';
+                echo '<img src="' . $row["image_url"] . '" alt="' . $row["name"] . '">';
+                echo '<div class="product-details">';
+                echo '<div class="product-name">' . $row["name"] . '</div>';
+                echo '<div class="product-price">$' . $row["price"] . '</div>';
+                echo '<div class="product-sizes">Sizes: ' . $row["sizes"] . '</div>';
+                echo '<div class="product-status">Status: ' . $row["status"] . '</div>';
+                // Add "Add to Cart" button with count
+                echo '<button class="add-to-cart-button" onclick="toggleButton(this)">Add to Cart <span class="add-to-cart-count" style="display: none;">0</span></button>';
+                // Add "Cancel" button initially hidden
+                echo '<button class="cancel-button" onclick="toggleButton(this)" style="display: none;">Cancel</button>';
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo "0 results";
+        }
+        $conn->close();
+
     ?>
         </div>
     </main>
@@ -278,36 +432,77 @@
 
 
     <script>
+
+    
+
         // JavaScript to handle slideshow
         var slideIndex = 0;
         showSlides();
 
-        function showSlides() {
-            var i;
-            var slides = document.getElementsByClassName("mySlides");
-            var dots = document.getElementsByClassName("dot");
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
+            function showSlides() {
+                var i;
+                var slides = document.getElementsByClassName("mySlides");
+                var dots = document.getElementsByClassName("dot");
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active", "");
+                }
+                slides[slideIndex-1].style.display = "block";
+                dots[slideIndex-1].className += " active";
+                setTimeout(showSlides, 5000); // Change image every 5 seconds
             }
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
-            slides[slideIndex-1].style.display = "block";
-            dots[slideIndex-1].className += " active";
-            setTimeout(showSlides, 5000); // Change image every 5 seconds
-        }
 
         // JavaScript to handle menu icon click event
-        document.addEventListener('DOMContentLoaded', function() {
-            var menuIcon = document.querySelector('.menu-icon');
-            var menuItems = document.querySelector('.menu-items');
+            document.addEventListener('DOMContentLoaded', function() {
+                var menuIcon = document.querySelector('.menu-icon');
+                var menuItems = document.querySelector('.menu-items');
 
-            menuIcon.addEventListener('click', function() {
-                menuItems.classList.toggle('show');
+                menuIcon.addEventListener('click', function() {
+                    menuItems.classList.toggle('show');
+                });
             });
-        });
+
+            var totalCount = 0;
+
+            function toggleButton(button) {
+                var countElement = button.parentNode.querySelector('.add-to-cart-count');
+                var cancelButton = button.parentNode.querySelector('.cancel-button');
+                var count = parseInt(countElement.innerText) || 0; // Get current count or set to 0
+
+                if (button.classList.contains('add-to-cart-button')) {
+                    // Increment count when Add to Cart button is clicked
+                    count++;
+                    totalCount++; // Increment total count
+                    countElement.style.display = "inline"; // Show count
+                    cancelButton.style.display = "inline"; // Show Cancel button
+                } else {
+                    // Decrement count when Cancel button is clicked
+                    count--;
+                    totalCount--; // Decrement total count
+                    if (count === 0) {
+                        countElement.style.display = "none"; // Hide count if it becomes zero
+                        cancelButton.style.display = "none"; // Hide Cancel button if count becomes zero
+                    }
+                }
+
+                countElement.innerText = count; // Update count display for this product
+                updateTotalCount(); // Update total count display
+
+                // Update the Add to Cart button text to show the count
+                button.innerText = "Add to Cart (" + count + ")";
+            }
+
+            function updateTotalCount() {
+                // Update the total count display wherever you want to show it
+                // For example, if you have a div with id "total-count-display":
+                document.getElementsByClassName("total-count-display")[0].innerText = "Total Count: " + totalCount;
+            }
+   
+
     </script>
 </body>
 </html>
