@@ -124,17 +124,25 @@
 
         /* Slideshow Styles */
         .slideshow-container {
-            max-width: 1000px;
             position: relative;
-            margin: 80px auto 0 auto; /* Added top margin to account for the fixed header */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0; /* Ensure slideshow is behind the header */
+            overflow: hidden;
         }
 
         .mySlides {
             display: none;
+            width: 100%;
+            height: 100%;
         }
 
         .mySlides img {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Next & previous buttons */
@@ -151,6 +159,7 @@
             transition: 0.6s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
+            z-index: 1001; /* Ensure buttons are above the slideshow */
         }
 
         .next {
@@ -174,6 +183,14 @@
         }
 
         /* The dots */
+        .dots-container {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 1001; /* Ensure dots are above the slideshow */
+        }
+
         .dot {
             cursor: pointer;
             height: 15px;
@@ -237,14 +254,13 @@
                 <img src="image/slide1.png" alt="Slide 1">
             </div>
             <div class="mySlides fade">
-                <img src="image/slide1.png" alt="Slide 2">
+                <img src="image/slide2.png" alt="Slide 2">
             </div>
             <div class="mySlides fade">
                 <img src="image/slide1.png" alt="Slide 3">
             </div>
         </div>
-        <br>
-        <div style="text-align:center">
+        <div class="dots-container">
             <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
@@ -252,9 +268,14 @@
 
         <!-- Add some content to demonstrate scrolling -->
         <div style="height: 1500px; background: linear-gradient(white, lightgray); padding: 20px;">
-            <p>Scroll down to see more content.</p>
+        <?php
+        include 'card_product.php'; // Assuming your Product class is in products.php
+    
+    ?>
         </div>
     </main>
+
+
 
     <script>
         // JavaScript to handle slideshow
@@ -275,7 +296,7 @@
             }
             slides[slideIndex-1].style.display = "block";
             dots[slideIndex-1].className += " active";
-            setTimeout(showSlides, 2000); // Change image every 2 seconds
+            setTimeout(showSlides, 5000); // Change image every 5 seconds
         }
 
         // JavaScript to handle menu icon click event
